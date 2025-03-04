@@ -6,8 +6,28 @@
     <title>Heart Beat</title>
 
     <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .typewriter-container {
+        position: absolute;
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+        text-align: center;
+      }
+      .typewriter-text {
+        color: #ff6b6b;
+        font-size: 24px;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+      }
+    </style>
   </head>
   <body>
+    <div class="typewriter-container">
+      <div class="typewriter-text" id="typewriter"></div>
+    </div>
+
     <script src="js/three.min.js"></script>
     <script src="js/MeshSurfaceSampler.js"></script>
     <script src="js/TrackballControls.js"></script>
@@ -15,5 +35,23 @@
     <script src="js/OBJLoader.js"></script>
     <script src="js/gsap.min.js"></script>
     <script src="js/script.js"></script>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const text = "亲爱的麻麻 祝你三八妇女节快乐";
+        const typewriterElement = document.getElementById('typewriter');
+        let i = 0;
+        
+        function typeWriter() {
+          if (i < text.length) {
+            typewriterElement.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typeWriter, 200); // 控制打字速度，数值越小越快
+          }
+        }
+        
+        typeWriter();
+      });
+    </script>
   </body>
 </html>
