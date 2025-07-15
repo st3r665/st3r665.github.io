@@ -1,0 +1,769 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="St3r">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="最近，在学习rust，本来想快速入门一下rust，然后补一下操作系统的知识，就感觉去写一个开源操作系统，以后拿来装装b….但这都只是幻想，在跟着语言圣经学习的过程中，发现rust和之前接触过的所有语言都不一样，之前不管是python，java还是go，学起来都没什么太大的难度，至少入门没什么问题，但是，rust真的是一门比较难的语言，从它的语言上来看就非常的不好理解。老实说，虽然作者说cpp比r">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust_note01">
+<meta property="og:url" content="http://st3r665.github.io/2025/07/15/Rust-note01/index.html">
+<meta property="og:site_name" content="St3r&#39;s Blog">
+<meta property="og:description" content="最近，在学习rust，本来想快速入门一下rust，然后补一下操作系统的知识，就感觉去写一个开源操作系统，以后拿来装装b….但这都只是幻想，在跟着语言圣经学习的过程中，发现rust和之前接触过的所有语言都不一样，之前不管是python，java还是go，学起来都没什么太大的难度，至少入门没什么问题，但是，rust真的是一门比较难的语言，从它的语言上来看就非常的不好理解。老实说，虽然作者说cpp比r">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749741700465_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749741779578_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749742366432_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749742828772_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749790153958_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749790391025_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749790797948_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749791175307_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749791424460_0.png">
+<meta property="og:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749791469250_0.png">
+<meta property="article:published_time" content="2025-07-15T09:26:49.000Z">
+<meta property="article:modified_time" content="2025-07-15T09:28:40.283Z">
+<meta property="article:author" content="St3r">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://st3r665.github.io/2025/07/15/Rust-note01/assets/image_1749741700465_0.png">
+  
+  
+  
+  <title>Rust_note01 - St3r&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"st3r665.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"cffMsCRnQgVg41fT6r4UVhsn-gzGzoHsz","app_key":"7fJmz4elucAMMsKGIgyYKPjw","server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>St3r&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Rust_note01"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-15 17:26" pubdate>
+          2025年7月15日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Rust_note01</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <ul>
+<li>最近，在学习rust，本来想快速入门一下rust，然后补一下操作系统的知识，就感觉去写一个开源操作系统，以后拿来装装b….但这都只是幻想，在跟着语言圣经学习的过程中，发现rust和之前接触过的所有语言都不一样，之前不管是python，java还是go，学起来都没什么太大的难度，至少入门没什么问题，但是，rust真的是一门比较难的语言，从它的语言上来看就非常的不好理解。老实说，虽然作者说cpp比rust难，但我真的觉得rust比cpp难多了(也有可能是我cpp学的太烂了….bushi)。所以来简单复盘一下，这还是我第一次学一门语言，专门复盘。</li>
+<li><h2 id="所有权"><a href="#所有权" class="headerlink" title="所有权"></a>所有权</h2><ul>
+<li>这是第一个，我觉得和其他语言非常不一样的点。熟悉java的同学都知道，java有自己独有的一套垃圾回收的机制，几乎所有的多余操作，idea都帮你解决，只要专注在代码上就ok，还有内存的分配和释放，虽然java等其他语言也有这样的操作，比如</li>
+<li><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String arg[])</span>&#123;<br>  <span class="hljs-type">OutputStream</span> <span class="hljs-variable">out</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileOutputStream</span>(<span class="hljs-string">&quot;file&quot;</span>);<br>  <span class="hljs-comment">//  Some special code</span><br>  out.close();<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>但其实对程序员来说，并没有什么实际的影响，对于大部分非科班出身的程序员更是只把这个当作结构化的代码，诸如此类的代码，在rust中会被颠覆！</li>
+<li>首先，引用大佬的C语言案例</li>
+<li><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">int</span>* <span class="hljs-title function_">foo</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">int</span> a;          <span class="hljs-comment">// 变量a的作用域开始</span><br>    a = <span class="hljs-number">100</span>;<br>    <span class="hljs-type">char</span> *c = <span class="hljs-string">&quot;xyz&quot;</span>;   <span class="hljs-comment">// 变量c的作用域开始</span><br>    <span class="hljs-keyword">return</span> &amp;a;<br>&#125;      <span class="hljs-comment">// 变量a和c的作用域结束</span><br></code></pre></td></tr></table></figure></li>
+<li>这段代码如果放在main函数中，或许还能勉强说的过去，但是这是一个自定义函数，局部变量a和c都被存放在了栈上的缓冲区，熟悉pwn的同学应该知道，这个很容易造成bufferoverflow(“栈溢出”)也就是常说的造成”内存安全”，所以rust就舍弃这样的方法。</li>
+<li>在rust中，所有的值和变量都保持这一一对应的关系，当定义一个变量，并且给它赋值，那么这个值的所有权就在这个变量手上，如果想要调用这个变量，只能通过借用的方法，比如</li>
+<li><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">s</span> = <span class="hljs-type">String</span>::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;hello&quot;</span>);<br>  s.<span class="hljs-title function_ invoke__">push_str</span>(<span class="hljs-string">&quot;, world!&quot;</span>);<br>  <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;&#123;&#125;&quot;</span> , s);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>上面的代码是rust的形式，可以很容易看出来，如果把里面特有的rust的函数换成javascript函数，运行这个函数没有任何问题，但是因为这个是rust，所以这段代码会直接编译不通过，那么来解释一下为什么会编译不通过。</li>
+<li>就像上面说的，每一个值都对应它初始化的那个变量，比方说字符串”hello”，一开始，它的所有权就在s身上，如果不做任何标注的话，只能通过引用来访问变量s里面的值，并且不可以修改值，就像java中如果一个类被import到main函数主类，java里的private和protected变量以及方法默认都是无法被访问的，只能通过间接的公共函数来获取或修改值。那么在rust里也有这样一个”中间人”就是”引用” ‘&amp;’。</li>
+<li>先来看一下所有权的一些小问题吧</li>
+<li><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">s1</span> = <span class="hljs-type">String</span>::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;hello&quot;</span>);<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">s2</span> = s1;<br>  <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;&#123;&#125; , &#123;&#125;&quot;</span> , s1 , s2);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>还是那句话，如果在javascript里，这样的代码运行不会有任何错误</li>
+<li><img src="/2025/07/15/Rust-note01/assets/image_1749741700465_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>可以看到，完美输出，但是在rust里呢？</li>
+<li><img src="/2025/07/15/Rust-note01/assets/image_1749741779578_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>可以看到，非常果断的报错噢，就像她当时拒绝你一样果断….把你挡在rust的大门外，呜呜呜…..</li>
+<li>开玩笑，简单看一下为啥报错，</li>
+<li><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">error[E0382]: borrow of moved value: `s1`<br><span class="hljs-meta prompt_"> --&gt; </span><span class="language-bash">src/main.rs:4:24</span><br>  |<br>2 |   let s1 = String::from(&quot;hello&quot;);<br>  |       -- move occurs because `s1` has type `String`, which does not implement the `Copy` trait<br>          -- 这里的大概意思说是因为s1这个字符串没有实现Copy特征<br>3 |   let s2 = s1;<br>  |            -- value moved here<br>               -- 意思就是变量的所有权被转移到了s2<br>4 |   println!(&quot;&#123;&#125; , &#123;&#125;&quot; , s1 , s2);<br>  |                        ^^ value borrowed here after move<br></code></pre></td></tr></table></figure></li>
+<li>首先来解决第一个提示，什么叫实现特征？</li>
+<li>大概和接口的意思比较像，一个特征就像一个接口，里面来写哪些方法需要去实现。为什么说rust很快，性能很好，就是因为和c语言非常像，是在栈和堆上进行操作的。rust里大概有基础的数据类型和一些…非基础的数据类型，比如基础类型有 i32 , u32 , i64 ,u64这些都是整形，还有str , bool，这些都占4个字节，全部存放在栈上，并且基础的类型都实现copy特征，比如</li>
+<li><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> = <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">y</span> = x;<br>  <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;&#123;&#125; , &#123;&#125;&quot;</span> , x , y);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><img src="/2025/07/15/Rust-note01/assets/image_1749742366432_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>可以看到程序正常编译运行，它可以正常运行的原因就是<strong>1</strong>是一个整形，那么它实现了Copy方法，在进行像上面这样的情况的赋值的时候，它交出的不是所有权，而是一个它的clone体，相当于把栈上x的4个字节的区域复制一份再压入栈。而之前的s1的定义方法可以看到String::…(“hello”)，这样定义的字符串是String类型的，它和4个字节大小的str类型不一样，String类型是存在堆上的，所以它没有实现Copy方法，也就导致了那个编译器的错误。</li>
+<li>第二个提示，说是value moved here，说是值被移动到这，其实就是”hello”这个值的所有权被移动到了，s2这里，s1失去了对”hello”这个字符串的所有权，所以就会直接被drop掉，那么这个变量在整个作用域，就不能再被使用，也就当然不能被输出。</li>
+<li>所以当代码被改成这样</li>
+<li><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">s1</span> = <span class="hljs-type">String</span>::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;hello&quot;</span>);<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">s2</span> = s1;<br>  <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;&#123;&#125; &quot;</span> , s2);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><img src="/2025/07/15/Rust-note01/assets/image_1749742828772_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>也就可以被正常编译执行了。</li>
+</ul>
+</li>
+<li><h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><ul>
+<li>引用也是一个我觉得非常新颖的概念，在以前的coding中从来没有遇到过这样的情况，或者类似的概念，直接上代码</li>
+<li><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> = <span class="hljs-number">5</span>;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">y</span> = &amp;x;<br>  <br>  <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;&#123;&#125; , &#123;&#125;&quot;</span> , x , y);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li>先来看运行结果</li>
+<li><img src="/2025/07/15/Rust-note01/assets/image_1749790153958_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>可以看到，非常完美的执行了，在rust中符号”&amp;”就代表引用的意思，let y &#x3D; &x;的意思就是y来引用x，这样就不会导致所有权的转移，也就不会发生悬垂引用的错误。</li>
+<li><h3 id="不可变引用"><a href="#不可变引用" class="headerlink" title="不可变引用"></a>不可变引用</h3><ul>
+<li>引用主要分为可变引用和不可变引用，在上面的代码中，y的定义的方法就是不可变引用，意思就是y只能访问x的值但是不能修改</li>
+<li><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> = <span class="hljs-number">5</span>;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">y</span> = &amp;x;<br>  <br>  y = <span class="hljs-number">10</span>;<br>  <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;&#123;&#125; , &#123;&#125;&quot;</span> , x , y);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><img src="/2025/07/15/Rust-note01/assets/image_1749790391025_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>可以看到报错了，报错信息是</li>
+<li><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">error[E0308]: mismatched types<br> --&gt; src/main.rs:5:7<br>  |<br>3 |   <span class="hljs-built_in">let</span> y = &amp;x;<br>  |           -- expected due to this value<br>4 |   <br>5 |   y = 10;<br>  |       ^^ expected `&amp;&#123;<span class="hljs-built_in">integer</span>&#125;`, found <span class="hljs-built_in">integer</span><br>  |<br>3help: consider borrowing here<br>  |<br>5 |   y = &amp;10;<br></code></pre></td></tr></table></figure></li>
+<li>意思就是不能修改引用的值，这是一个非常安全的做法，就和在java中外部类不能访问导入类的private和protected属性。</li>
+<li><h3 id="可变引用"><a href="#可变引用" class="headerlink" title="可变引用"></a>可变引用</h3></li>
+<li>在rust里当然也可以使用可变引用来对变量进行修改，</li>
+<li><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>  <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">x</span> = <span class="hljs-type">String</span>::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;hello&quot;</span>);<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">y</span> = &amp;<span class="hljs-keyword">mut</span> x;<br>  y.<span class="hljs-title function_ invoke__">push_str</span>(<span class="hljs-string">&quot; , world!&quot;</span>);<br>  <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;&#123;&#125; , &#123;&#125;&quot;</span> , x , y);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><img src="/2025/07/15/Rust-note01/assets/image_1749790797948_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>可以看到编译器还是无情的把程序crash掉，说明还是有问题，其实还是所有权的问题，因为改变了x变量，所以最后改变之后，string的所有权还是到了y身上。但其实还有种办法就是利用函数来进行可变引用的修改</li>
+<li><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>  <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">s</span> = <span class="hljs-type">String</span>::<span class="hljs-title function_ invoke__">from</span>(<span class="hljs-string">&quot;hello&quot;</span>);<br>  <span class="hljs-title function_ invoke__">change</span>(&amp;<span class="hljs-keyword">mut</span> s);<br>  <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;&#123;&#125;&quot;</span> , s);<br>&#125;<br><span class="hljs-keyword">fn</span> <span class="hljs-title function_">change</span>(some_string: &amp;<span class="hljs-keyword">mut</span> <span class="hljs-type">String</span>) &#123;<br>  some_string.<span class="hljs-title function_ invoke__">push_Str</span>(<span class="hljs-string">&quot;, world~&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><img src="/2025/07/15/Rust-note01/assets/image_1749791175307_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>这大概就是引用的部分，和c语言的取地址符号很像，所以对应的还有一个解引用符号”*”。</li>
+<li><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs rust"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() &#123;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">x</span> = <span class="hljs-number">5</span>;<br>  <span class="hljs-keyword">let</span> <span class="hljs-variable">y</span> = &amp;x;  <span class="hljs-comment">// 实际上&amp;x也相当于是一个地址的符号，指向的并不是x真实的值，而是x真实值所对应的地址</span><br>  <br>  <span class="hljs-built_in">assert_eq!</span>(x , <span class="hljs-number">5</span>);<br>  <span class="hljs-built_in">assert_eq!</span>(<span class="hljs-number">5</span>, *y);   所以如果需要断言的话，就应该是先*(&amp;x)解引用<br>&#125;<br></code></pre></td></tr></table></figure></li>
+<li><img src="/2025/07/15/Rust-note01/assets/image_1749791424460_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>可以看到很正确，没有任何错误输出，如果是没有解引用</li>
+<li><img src="/2025/07/15/Rust-note01/assets/image_1749791469250_0.png" srcset="/img/loading.gif" lazyload alt="image.png"></li>
+<li>恭喜，又crash了！</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Rust_note01</div>
+      <div>http://st3r665.github.io/2025/07/15/Rust-note01/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>St3r</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/10/MCP-Prompt-Injection/" title="MCP_Prompt-Injection">
+                        <span class="hidden-mobile">MCP_Prompt-Injection</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"cffMsCRnQgVg41fT6r4UVhsn-gzGzoHsz","appKey":"7fJmz4elucAMMsKGIgyYKPjw","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
