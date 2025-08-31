@@ -1,0 +1,764 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="St3r">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="操作系统学习手记：当计算机与世界相连计算机的价值在于与我们交互，与外部世界交换信息。这一章，我们就来聊聊这个“交换”的过程——I&#x2F;O（输入&#x2F;输出）以及信息得以长久保存的基石——文件系统。 那么，就让我们从最基本的 I&#x2F;O 开始！ L25 IO与显示器I&#x2F;O，顾名思义就是输入（Input）和输出（Output）。CPU 和内存是计算机的核心，而所有连接到这个核">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统学习手记03">
+<meta property="og:url" content="http://st3r665.github.io/2025/08/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B003/index.html">
+<meta property="og:site_name" content="St3r&#39;s Blog">
+<meta property="og:description" content="操作系统学习手记：当计算机与世界相连计算机的价值在于与我们交互，与外部世界交换信息。这一章，我们就来聊聊这个“交换”的过程——I&#x2F;O（输入&#x2F;输出）以及信息得以长久保存的基石——文件系统。 那么，就让我们从最基本的 I&#x2F;O 开始！ L25 IO与显示器I&#x2F;O，顾名思义就是输入（Input）和输出（Output）。CPU 和内存是计算机的核心，而所有连接到这个核">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-31T13:22:41.000Z">
+<meta property="article:modified_time" content="2025-08-31T13:22:46.412Z">
+<meta property="article:author" content="St3r">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>操作系统学习手记03 - St3r&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"st3r665.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"cffMsCRnQgVg41fT6r4UVhsn-gzGzoHsz","app_key":"7fJmz4elucAMMsKGIgyYKPjw","server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>St3r&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="操作系统学习手记03"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-31 21:22" pubdate>
+          2025年8月31日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          26 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">操作系统学习手记03</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="操作系统学习手记：当计算机与世界相连"><a href="#操作系统学习手记：当计算机与世界相连" class="headerlink" title="操作系统学习手记：当计算机与世界相连"></a>操作系统学习手记：当计算机与世界相连</h1><p>计算机的价值在于与我们交互，与外部世界交换信息。这一章，我们就来聊聊这个“交换”的过程——I&#x2F;O（输入&#x2F;输出）以及信息得以长久保存的基石——文件系统。</p>
+<p>那么，就让我们从最基本的 I&#x2F;O 开始！</p>
+<h2 id="L25-IO与显示器"><a href="#L25-IO与显示器" class="headerlink" title="L25 IO与显示器"></a>L25 IO与显示器</h2><p>I&#x2F;O，顾名思义就是输入（Input）和输出（Output）。CPU 和内存是计算机的核心，而所有连接到这个核心上的其他设备，比如键盘、鼠标、显示器、硬盘、网卡等，都统称为<strong>外围设备</strong>或<strong>I&#x2F;O设备</strong>。操作系统的一个核心职责，就是管理这些设备，并为上层应用提供一个统一、简洁的交互接口。</p>
+<p>CPU 如何与这些形形色色的设备沟通呢？主要有两种方式：</p>
+<ol>
+<li><strong>端口 I&#x2F;O (Port I&#x2F;O)</strong>：CPU 使用特殊的 <code>in</code> 和 <code>out</code> 指令，通过一个独立的“端口地址空间”来访问设备。每个设备控制器会占用几个端口号，CPU 通过这些端口号来发送命令、读取状态、传输数据。</li>
+<li><strong>内存映射 I&#x2F;O (Memory-Mapped I&#x2F;O)</strong>：将设备控制器的寄存器、数据缓冲区等映射到物理内存地址空间的一部分。这样一来，CPU 就可以像访问普通内存一样，使用 <code>mov</code> 等常规指令来和设备交互，不再需要特殊的I&#x2F;O指令。这种方式更现代，也更灵活。</li>
+</ol>
+<p>我们先来看一个最直观的输出设备——<strong>显示器</strong>。 我们之所以能在屏幕上看到五彩斑斓的图像，是因为有一块专门的内存区域，叫做<strong>显存（Video RAM 或 Framebuffer）</strong>。这块内存被映射到了显示设备的控制器上。</p>
+<ul>
+<li><strong>工作原理</strong>：操作系统（或显卡驱动）向这块特定的内存区域写入数据，每一个或几个字节就对应了屏幕上的一个像素点的颜色和亮度信息。显示控制器会不断地、以极高的频率（比如每秒60次）读取整个显存的内容，并根据这些数据控制电子枪或液晶像素点，从而在屏幕上绘制出完整的图像。</li>
+<li><strong>本质</strong>：对程序来说，在屏幕上显示一个“A”，本质上就是计算出“A”这个字符的像素点阵，然后将这些像素对应的颜色值，写入到显存中正确的位置。我们平时调用的图形库API，最终都是在执行这个操作。而管理显存、提供绘图接口，就是显示器驱动程序的核心任务。</li>
+</ul>
+<h2 id="L26-键盘"><a href="#L26-键盘" class="headerlink" title="L26 键盘"></a>L26 键盘</h2><p>说完了输出，我们再来看最经典的输入设备——<strong>键盘</strong>。 你有没有想过，当你按下键盘上的一个键时，计算机是如何知道你按了哪个键的？这个过程是<strong>中断驱动</strong>的，非常精妙。</p>
+<ol>
+<li><strong>按下按键</strong>：当你按下键盘上的一个键时，键盘内部的芯片会检测到这个动作，并生成一个编码，这个编码叫做<strong>扫描码（Scan Code）</strong>，它唯一地标识了被按下的那个物理按键（注意，不是字符’A’，而是“A键”这个位置）。</li>
+<li><strong>发送信号</strong>：键盘控制器会将这个扫描码发送给主板上的键盘接口。</li>
+<li><strong>触发中断</strong>：主板上的中断控制器接收到信号后，会向 CPU 发送一个<strong>硬件中断请求（IRQ）</strong>。</li>
+<li><strong>CPU响应</strong>：CPU 在执行完当前指令后，会检测到这个中断信号。它会立刻停下手中正在运行的程序，保存好当前的“工作现场”（寄存器状态等）。</li>
+<li><strong>执行中断服务程序</strong>：CPU 根据中断号，在<strong>中断向量表</strong>中查找到对应的处理程序的地址，这个程序就是<strong>键盘中断服务程序（ISR - Interrupt Service Routine）</strong>。然后跳转到这个地址开始执行。</li>
+<li><strong>处理输入</strong>：键盘ISR会从键盘控制器的端口读取到那个扫描码。然后，操作系统会对这个扫描码进行解释，比如结合<code>Shift</code>键的状态，把它翻译成真正的ASCII字符（例如，’a’ 或 ‘A’）。</li>
+<li><strong>放入缓冲区</strong>：翻译好的字符会被放入一个系统级的<strong>键盘缓冲区</strong>中。</li>
+<li><strong>恢复现场</strong>：ISR 执行完毕后，CPU 会恢复之前保存的现场，回到被打断的程序那里，继续往下执行。整个过程快到用户毫无察觉。</li>
+</ol>
+<p>当你在一个文本编辑器里写东西时，编辑器程序会通过系统调用，从那个键盘缓冲区里读取字符，然后显示在屏幕上。这就是一次完整的按键输入-处理-输出的流程。</p>
+<h2 id="L27-生磁盘的使用"><a href="#L27-生磁盘的使用" class="headerlink" title="L27 生磁盘的使用"></a>L27 生磁盘的使用</h2><p>显示器和键盘是瞬时设备，而**磁盘（硬盘）**则是**持久化存储**的基石，关机后数据依然存在。在文件系统这个优雅的抽象出现之前，使用磁盘是一种非常原始和直接的方式。</p>
+<ul>
+<li><strong>物理结构</strong>：一个机械硬盘由多个<strong>盘片（Platter）**组成，每个盘片有两个面，每个面又被划分为很多同心圆，称为**磁道（Track）**。每个磁道又被进一步划分为若干个扇形的区域，称为</strong>扇区（Sector）**。扇区是磁盘读写的最小物理单位，通常是512字节或4KB。</li>
+<li><strong>生磁盘使用（Raw Disk Access）</strong>：操作系统可以通过磁盘控制器，直接向磁盘发送命令，比如“读取第 N 个扇区的数据”或“向第 M 个扇区写入数据”。这里的 N 和 M 是扇区的<strong>绝对物理地址</strong>。</li>
+<li><strong>视角</strong>：在“生磁盘”的视角下，整个硬盘就像一个巨大的一维字节数组（或者说扇区数组）。操作系统可以直接访问这个数组的任意位置。</li>
+<li><strong>用途</strong>：这种方式虽然对上层应用来说非常不便且危险（一不小心就可能覆盖掉重要数据），但它却是操作系统本身构建更高级功能的基础。比如，文件系统的初始化、磁盘分区的管理，都离不开对磁盘扇区的直接读写。</li>
+</ul>
+<h2 id="L28-用文件使用磁盘"><a href="#L28-用文件使用磁盘" class="headerlink" title="L28 用文件使用磁盘"></a>L28 用文件使用磁盘</h2><p>直接操作扇区太反人类了。没人愿意记着“我的文档第一部分在第18324个扇区，第二部分在第98234个扇区”。我们需要一个更友好的抽象层。于是，<strong>文件（File）</strong> 这个概念诞生了。</p>
+<ul>
+<li><strong>什么是文件</strong>：文件是操作系统为用户提供的一个逻辑存储单元。从用户的角度看，文件就是一段连续的、有名字的数据流。你可以从头读到尾，或者直接定位到中间某个位置，而完全不需要关心这些数据到底被存放在磁盘的哪些扇区，以及这些扇区是否连续。</li>
+<li><strong>文件属性（元数据）</strong>：除了数据本身，每个文件还有一堆描述它的信息，比如：文件名、文件类型、大小、创建时间、修改时间、所有者、访问权限等等。这些信息被称为<strong>元数据（Metadata）</strong>。</li>
+<li><strong>操作系统的任务</strong>：文件系统的核心任务之一，就是实现从<strong>逻辑文件到物理磁盘块</strong>的映射。当用户请求读取文件的第1000个字节时，文件系统需要计算出这第1000个字节位于文件的第几个逻辑块，然后通过文件的元数据查到这个逻辑块对应磁盘上的哪个物理扇区，最后才发起真正的磁盘I&#x2F;O请求。</li>
+</ul>
+<p>文件这个抽象，是计算机科学史上最伟大的发明之一。它将混乱无序的物理存储，变成了我们今天习以为常的、结构化的信息管理方式。</p>
+<h2 id="L29-目录与文件系统"><a href="#L29-目录与文件系统" class="headerlink" title="L29 目录与文件系统"></a>L29 目录与文件系统</h2><p>有了文件，我们解决了单个数据集合的存储问题。但很快，成千上万个文件堆在一起，找一个文件又成了新难题。于是，<strong>目录（Directory）</strong> 或 <strong>文件夹（Folder）</strong> 的概念应运而生。</p>
+<ul>
+<li><strong>目录</strong>：目录本身也是一种特殊的文件。它的内容不是普通的用户数据，而是一个列表，记录了存放在这个目录下的文件名以及指向这些文件元数据的位置信息。</li>
+<li><strong>目录结构</strong>：<ul>
+<li><strong>单级目录</strong>：所有文件都在一个大目录下，文件名不能重复。简单，但文件一多就乱了。</li>
+<li><strong>两级目录</strong>：每个用户有一个主目录，文件都放在自己的主目录下。解决了不同用户间的文件名冲突问题。</li>
+<li><strong>树形结构目录</strong>：这是现代操作系统普遍采用的结构。目录可以包含子目录，形成一个层次化的树状结构。这种结构清晰、灵活，扩展性强。</li>
+</ul>
+</li>
+</ul>
+<p>将文件、目录以及管理它们的一整套机制（包括元数据结构、磁盘空间管理、数据块分配策略等）结合在一起，就构成了<strong>文件系统（File System）</strong>。</p>
+<p>一个磁盘分区在被使用前，必须先用某个文件系统（如FAT32, NTFS, ext4）进行<strong>格式化</strong>。格式化的过程，就是在磁盘上建立起这个文件系统的基本数据结构，比如：</p>
+<ul>
+<li><strong>引导块（Boot Block）</strong>：存储了从该分区启动操作系统所需的信息。</li>
+<li><strong>超级块（Superblock）</strong>：包含了整个文件系统的“宏观”信息，如文件系统类型、块大小、块总数、inode总数、空闲块信息等。是文件系统的“户口本”。</li>
+<li><strong>元数据区</strong>：存放文件的元数据。在类Unix系统中，这通常是 <strong>inode（索引节点）</strong> 表。每个文件或目录都有一个唯一的inode，里面记录了文件的所有属性和指向数据块的指针。</li>
+<li><strong>数据区（Data Blocks）</strong>：真正存放文件内容的地方。</li>
+</ul>
+<h2 id="L30-目录解析代码实现"><a href="#L30-目录解析代码实现" class="headerlink" title="L30 目录解析代码实现"></a>L30 目录解析代码实现</h2><p>当我们给出一个路径，比如 <code>/home/user/notes.txt</code>，文件系统是如何找到这个文件的呢？这个过程就是<strong>路径解析</strong>。</p>
+<p>让我们模拟一下这个“按图索骥”的过程：</p>
+<ol>
+<li><strong>从根开始</strong>：路径以 <code>/</code> 开头，表示从<strong>根目录</strong>开始。文件系统通过访问超级块，可以找到根目录的 inode 在磁盘上的位置。</li>
+<li><strong>查找 <code>home</code></strong>：文件系统读取根目录的数据块。前面说了，目录的内容是一个列表。它在这个列表中搜索名为 <code>home</code> 的条目。</li>
+<li><strong>找到 <code>home</code> 的 inode</strong>：找到 <code>home</code> 条目后，就从中获取了 <code>home</code> 目录的 inode 号。</li>
+<li><strong>读取 <code>home</code> 目录</strong>：文件系统根据 <code>home</code> 的 inode，找到 <code>home</code> 目录的数据块，并读取其内容。</li>
+<li><strong>查找 <code>user</code></strong>：在 <code>home</code> 目录的内容列表中，搜索名为 <code>user</code> 的条目，从而找到 <code>user</code> 目录的 inode 号。</li>
+<li><strong>读取 <code>user</code> 目录</strong>：重复上述步骤，根据 <code>user</code> 的 inode 读取 <code>user</code> 目录的数据。</li>
+<li><strong>查找 <code>notes.txt</code></strong>：在 <code>user</code> 目录的内容列表中，搜索名为 <code>notes.txt</code> 的条目，最终找到这个文件的 inode 号。</li>
+<li><strong>访问文件</strong>：现在，文件系统拿到了 <code>notes.txt</code> 的 inode。这个 inode 里包含了文件的所有信息，最重要的是指向其数据块的指针。至此，我们就可以根据这些指针，去磁盘的数据区读取文件的真正内容了。</li>
+</ol>
+<p>这个过程涉及多次磁盘I&#x2F;O，为了提高效率，操作系统会大量使用<strong>缓存（Cache）</strong>，将最近访问过的目录内容和 inode 缓存在内存中，避免重复的磁盘读取。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>正是这些看似乎理所当然的抽象，才使得我们能够方便地与计算机交互、高效地管理海量数据。下一次，当你双击打开一个文件时，不妨想一-想这背后操作系统所经历的从路径解析到磁盘读写的漫长而精妙的旅程。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>操作系统学习手记03</div>
+      <div>http://st3r665.github.io/2025/08/31/操作系统学习手记03/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>St3r</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月31日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B002/" title="操作系统学习手记02">
+                        <span class="hidden-mobile">操作系统学习手记02</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"cffMsCRnQgVg41fT6r4UVhsn-gzGzoHsz","appKey":"7fJmz4elucAMMsKGIgyYKPjw","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

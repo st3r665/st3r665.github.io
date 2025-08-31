@@ -1,0 +1,864 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="St3r">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="最近在啃操作系统里的进程与线程管理 L9 多进程图像我们学习的起点，要从“进程”这个核心概念说起。 简单来说，一个进程（Process）就是一个正在执行的程序的实例。当我们双击运行一个 .exe 文件时，操作系统就会为它创建一个进程。这个进程是操作系统进行资源分配和调度的基本单位。 为了管理好进程，操作系统需要为每个进程维护一个信息集合，这包括：  程序代码：也就是程序的指令序列。 数据：程序运行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统学习手记01">
+<meta property="og:url" content="http://st3r665.github.io/2025/08/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B001/index.html">
+<meta property="og:site_name" content="St3r&#39;s Blog">
+<meta property="og:description" content="最近在啃操作系统里的进程与线程管理 L9 多进程图像我们学习的起点，要从“进程”这个核心概念说起。 简单来说，一个进程（Process）就是一个正在执行的程序的实例。当我们双击运行一个 .exe 文件时，操作系统就会为它创建一个进程。这个进程是操作系统进行资源分配和调度的基本单位。 为了管理好进程，操作系统需要为每个进程维护一个信息集合，这包括：  程序代码：也就是程序的指令序列。 数据：程序运行">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-31T13:15:23.000Z">
+<meta property="article:modified_time" content="2025-08-31T13:17:49.132Z">
+<meta property="article:author" content="St3r">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>操作系统学习手记01 - St3r&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"st3r665.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"cffMsCRnQgVg41fT6r4UVhsn-gzGzoHsz","app_key":"7fJmz4elucAMMsKGIgyYKPjw","server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>St3r&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="操作系统学习手记01"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-31 21:15" pubdate>
+          2025年8月31日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          37 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">操作系统学习手记01</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>最近在啃操作系统里的进程与线程管理</p>
+<h2 id="L9-多进程图像"><a href="#L9-多进程图像" class="headerlink" title="L9 多进程图像"></a>L9 多进程图像</h2><p>我们学习的起点，要从“进程”这个核心概念说起。</p>
+<p>简单来说，一个进程（Process）就是一个正在执行的程序的实例。当我们双击运行一个 <code>.exe</code> 文件时，操作系统就会为它创建一个进程。这个进程是操作系统进行资源分配和调度的基本单位。</p>
+<p>为了管理好进程，操作系统需要为每个进程维护一个信息集合，这包括：</p>
+<ul>
+<li><strong>程序代码</strong>：也就是程序的指令序列。</li>
+<li><strong>数据</strong>：程序运行过程中需要用到的变量、工作空间、缓冲区等。</li>
+<li><strong>资源</strong>：进程持有的系统资源，比如打开的文件、分配的内存、使用的I&#x2F;O设备。</li>
+<li><strong>进程控制块（PCB - Process Control Block）</strong>：这是进程存在的唯一标识。它是一个数据结构，里面存储了操作系统管理进程所需的所有信息，比如进程ID、进程当前状态（就绪、运行、阻塞）、CPU寄存器现场、内存管理信息、I&#x2F;O状态信息等。</li>
+</ul>
+<p>所谓的“多进程图像”，其实就是操作系统在内存中维护的、所有进程的PCB集合以及它们之间的关系。操作系统通过这张“图”，掌握着系统中所有进程的动态，从而能够有效地进行管理和调度。正是通过在不同进程之间快速切换（上下文切换），操作系统在宏观上实现了多任务并行处理的假象，即便是在单核CPU上，也能让我们感觉电脑可以“一心多用”。</p>
+<h2 id="L11-L12：用户级线程-vs-核心级线程"><a href="#L11-L12：用户级线程-vs-核心级线程" class="headerlink" title="L11 &amp; L12：用户级线程 vs 核心级线程"></a>L11 &amp; L12：用户级线程 vs 核心级线程</h2><p>多进程模型虽然实现了并发，但它有两个显著的缺点：一是创建进程的开销大，需要分配独立的地址空间和大量内核资源；二是进程间上下文切换成本高，需要保存和恢复大量的状态信息。</p>
+<p>为了解决这些问题，“线程”（Thread）的概念应运而生。线程也被称为轻量级进程（Lightweight Process），它是一个进程内部的执行单元，是CPU调度的基本单位。一个进程可以包含多个线程，这些线程共享该进程的地址空间和大部分资源（如文件句柄），但每个线程拥有自己独立的执行栈、寄存器和程序计数器。</p>
+<p>由于线程间的切换只涉及少量私有资源的切换，而不需要切换整个进程的地址空间，因此效率远高于进程切换。关于线程的实现，主要有两种模型：</p>
+<h3 id="L11-用户级线程（User-level-Threads）"><a href="#L11-用户级线程（User-level-Threads）" class="headerlink" title="L11 用户级线程（User-level Threads）"></a>L11 用户级线程（User-level Threads）</h3><p>在这种模型中，线程的管理（创建、销毁、同步、调度）完全由用户空间的线程库来完成，操作系统内核对此一无所知。内核只看得到进程，看不到进程内部的线程。</p>
+<ul>
+<li><strong>优点</strong>：<ol>
+<li><strong>高效</strong>：线程切换不需要进入内核态，没有系统调用的开销，速度非常快。</li>
+<li><strong>灵活性高</strong>：调度算法可以由应用程序根据自身需求定制。</li>
+</ol>
+</li>
+<li><strong>缺点</strong>：<ol>
+<li><strong>阻塞问题</strong>：如果一个线程因为执行了一个阻塞式的系统调用（如 <code>read()</code> 文件）而被阻塞，内核会认为整个进程都被阻塞了，从而暂停该进程的执行。这会导致该进程内所有其他本可以运行的线程也无法执行。</li>
+<li><strong>无法利用多核</strong>：由于内核只将CPU时间片分配给进程，它无法将一个进程内的多个线程分别调度到多个CPU核心上并行执行。</li>
+</ol>
+</li>
+</ul>
+<h3 id="L12-核心级线程（Kernel-level-Threads）"><a href="#L12-核心级线程（Kernel-level-Threads）" class="headerlink" title="L12 核心级线程（Kernel-level Threads）"></a>L12 核心级线程（Kernel-level Threads）</h3><p>在这种模型中，线程的管理工作由操作系统内核来完成。线程的创建、销毁和切换都需要通过系统调用陷入内核。</p>
+<ul>
+<li><strong>优点</strong>：<ol>
+<li><strong>真正的并行</strong>：内核可以识别到进程内的多个线程，因此可以将它们调度到不同的CPU核心上同时运行。</li>
+<li><strong>阻塞健壮性</strong>：当一个线程被阻塞时，内核可以立刻调度该进程内的其他就绪线程来运行，整个进程的执行不会被中断。</li>
+</ol>
+</li>
+<li><strong>缺点</strong>：<ol>
+<li><strong>开销较大</strong>：线程管理的任何操作都需要从用户态切换到内核态，相比用户级线程，存在一定的性能开销。</li>
+</ol>
+</li>
+</ul>
+<p>目前主流的现代操作系统，如 Windows 和 Linux，都主要采用核心级线程模型，因为它能更好地利用多核处理器的硬件优势，并解决阻塞问题，这在现代计算环境中至关重要。</p>
+<h2 id="L13-核心级线程实现实例"><a href="#L13-核心级线程实现实例" class="headerlink" title="L13 核心级线程实现实例"></a>L13 核心级线程实现实例</h2><p>了解了理论模型，我们来看看实际的实现。以 Linux 为例，它的线程实现非常有特点。在Linux内核中，并没有严格区分进程和线程，它们都被统一视为“任务”（task），并用 <code>task_struct</code> 结构体来描述。</p>
+<p>Linux 通过 <code>clone()</code> 系统调用来创建新任务。<code>fork()</code> 系统调用是创建一个几乎与父进程完全一样的子进程（采用写时复制技术共享初始内存），而 <code>clone()</code> 则提供了更细粒度的控制，允许新创建的任务与父任务有选择地共享资源。</p>
+<p><code>clone()</code> 调用时可以传入一系列标志位，来指定哪些资源需要共享，例如：</p>
+<ul>
+<li><code>CLONE_VM</code>：共享地址空间。</li>
+<li><code>CLONE_FS</code>：共享文件系统信息。</li>
+<li><code>CLONE_FILES</code>：共享打开的文件描述符。</li>
+<li><code>CLONE_SIGHAND</code>：共享信号处理器。</li>
+</ul>
+<p>当一个新任务通过 <code>clone()</code> 创建，并与父任务共享了地址空间和其他关键资源时，从操作系统的角度看，这个新任务就是一个线程。如果创建时选择不共享这些资源，那么它就是一个传统的进程。我们平时在应用层调用的 <code>pthread_create</code> 库函数，其底层实现就是封装了 <code>clone()</code> 系统调用。这种将进程和线程统一为任务的设计，非常优雅和高效。</p>
+<h2 id="L14-CPU-调度策略"><a href="#L14-CPU-调度策略" class="headerlink" title="L14 CPU 调度策略"></a>L14 CPU 调度策略</h2><p>系统中通常有大量处于就绪状态的进程&#x2F;线程，但CPU核心数量有限。CPU调度器的任务就是，根据某种策略，从就绪队列中选择一个任务，将CPU的使用权分配给它。一个好的调度策略对系统性能至关重要，影响着系统的吞吐量、周转时间和响应时间。</p>
+<p>以下是一些经典的调度策略：</p>
+<ol>
+<li><strong>先来先服务（FCFS, First-Come, First-Served）</strong><ul>
+<li><strong>机制</strong>：按进程到达就绪队列的先后顺序进行调度。实现简单。</li>
+<li><strong>问题</strong>：对短作业不友好。如果一个计算量很大的长作业先到达，会导致后续的短作业长时间等待，即“护航效应”。</li>
+</ul>
+</li>
+<li><strong>最短作业优先（SJF, Shortest Job First）</strong><ul>
+<li><strong>机制</strong>：优先选择预计运行时间最短的作业。可以证明其平均等待时间是最优的。</li>
+<li><strong>问题</strong>：需要预测作业的运行时间，这很难做到。可能导致长作业一直得不到调度，产生“饥饿”现象。其抢占式版本称为“最短剩余时间优先”（SRTN）。</li>
+</ul>
+</li>
+<li><strong>轮转调度（RR, Round Robin）</strong><ul>
+<li><strong>机制</strong>：为每个进程分配一个固定的“时间片”。进程运行一个时间片后，如果还未完成，就中断它，并将其放回就绪队列的末尾，然后调度下一个进程。</li>
+<li><strong>优点</strong>：公平，响应及时，非常适合分时和交互式系统。</li>
+<li><strong>缺点</strong>：性能受时间片大小影响。时间片过大则退化为FCFS，过小则上下文切换的开销占比过高。</li>
+</ul>
+</li>
+<li><strong>优先级调度（Priority Scheduling）</strong><ul>
+<li><strong>机制</strong>：为每个进程分配一个优先级，CPU总是选择优先级最高的进程执行。</li>
+<li><strong>问题</strong>：可能导致低优先级进程“饥饿”。</li>
+<li><strong>解决方案</strong>：可以采用“老化”（Aging）技术，动态提升长时间等待的进程的优先级。</li>
+</ul>
+</li>
+<li><strong>多级队列调度（Multilevel Queue Scheduling）</strong><ul>
+<li><strong>机制</strong>：将就绪队列划分为多个独立的队列，如前台（交互式）队列和后台（批处理）队列。每个队列有自己的调度算法（如前台用RR，后台用FCFS），队列之间也可以设置优先级。</li>
+<li><strong>问题</strong>：不够灵活，进程被分配到某个队列后通常不能移动。</li>
+</ul>
+</li>
+<li><strong>多级反馈队列调度（Multilevel Feedback Queue Scheduling）</strong><ul>
+<li><strong>机制</strong>：是多级队列的改进版，允许进程在队列之间移动。例如，新进程进入最高优先级队列，若在一个时间片内未完成，则降级到次一级队列。这种机制能够很好地满足不同类型进程的需求，是现代操作系统中广泛采用的一种调度策略。</li>
+</ul>
+</li>
+</ol>
+<h2 id="L15-一个实际的-schedule-函数"><a href="#L15-一个实际的-schedule-函数" class="headerlink" title="L15 一个实际的 schedule 函数"></a>L15 一个实际的 <code>schedule</code> 函数</h2><p><code>schedule()</code> 函数是操作系统内核调度器的具体实现。它在需要进行CPU调度的时刻被调用，例如：</p>
+<ul>
+<li>当前进程的时间片耗尽（由时钟中断触发）。</li>
+<li>当前进程主动放弃CPU（例如，等待I&#x2F;O完成而进入阻塞状态）。</li>
+<li>一个更高优先级的进程变为就绪状态（在抢占式系统中）。</li>
+<li>当前进程执行完毕。</li>
+</ul>
+<p><code>schedule()</code> 函数的核心逻辑通常包括：</p>
+<ol>
+<li><strong>旧进程状态保存</strong>：如果需要切换，首先要保存当前正在运行进程的上下文（即所有CPU寄存器的值、程序计数器、栈指针等）到其PCB中。</li>
+<li><strong>新进程选择</strong>：根据系统的调度策略，从就绪队列中选择出下一个要运行的进程。</li>
+<li><strong>新进程状态恢复</strong>：将选中的新进程的上下文从其PCB中加载到CPU的相应寄存器中。</li>
+<li><strong>控制权转移</strong>：CPU从新加载的程序计数器所指向的地址开始执行，从而将控制权交给新进程。</li>
+</ol>
+<p>这个从一个进程切换到另一个进程的过程，被称为“上下文切换”（Context Switch），它是实现多任务处理的基础，但本身也存在一定的性能开销。</p>
+<h2 id="L16-进程同步与信号量"><a href="#L16-进程同步与信号量" class="headerlink" title="L16 进程同步与信号量"></a>L16 进程同步与信号量</h2><p>当多个线程共享数据时，如果没有适当的同步机制，就可能引发问题。其中最典型的是“竞态条件”（Race Condition）。</p>
+<ul>
+<li><strong>临界区（Critical Section）</strong>：指程序中访问共享资源（如共享变量、共享文件）的一段代码。</li>
+<li><strong>竞态条件</strong>：当多个线程并发执行，进入同一个临界区时，最终结果取决于这些线程执行的相对时序。这种不确定性常常会导致程序错误。</li>
+</ul>
+<p>为了保证数据的一致性，我们需要实现“互斥”（Mutual Exclusion），即确保在任何时刻最多只有一个线程能进入临界区。</p>
+<p><strong>信号量（Semaphore）</strong> 是由Dijkstra提出的一种经典的同步工具。它是一个受保护的整型变量，只能通过两种原子的（不可中断的）操作来访问：</p>
+<ul>
+<li><code>P(S)</code> 或 <code>wait(S)</code>：申请资源。<code>S</code>的值减1。如果结果小于0，表示资源不足，则调用该操作的线程被阻塞。</li>
+<li><code>V(S)</code> 或 <code>signal(S)</code>：释放资源。<code>S</code>的值加1。如果结果小于或等于0，表示有线程正在等待该资源，则唤醒一个等待中的线程。</li>
+</ul>
+<p>根据初始值的不同，信号量可分为：</p>
+<ul>
+<li><strong>二值信号量（Mutex Lock）</strong>：初始值为1，用于实现互斥锁，保证临界区只有一个线程进入。</li>
+<li><strong>计数信号量</strong>：初始值大于1，用于管理一组有限的资源，例如，一个有N个缓冲区的生产者-消费者问题。</li>
+</ul>
+<h2 id="L17-对信号量的临界区保护"><a href="#L17-对信号量的临界区保护" class="headerlink" title="L17 对信号量的临界区保护"></a>L17 对信号量的临界区保护</h2><p>这里有一个关键问题：<code>P</code> 和 <code>V</code> 操作本身也访问了共享变量 <code>S</code>，它们自身也构成了临界区。如果不对<code>P</code>和<code>V</code>操作的执行过程加以保护，让它们可以被中断，那么信号量机制本身就会因为竞态条件而出错。因此，<code>P</code>和<code>V</code>必须是<strong>原子操作</strong>。</p>
+<p>实现原子性的方法依赖于硬件支持：</p>
+<ol>
+<li><strong>单处理器系统</strong>：可以在执行<code>P</code>或<code>V</code>操作期间<strong>禁用中断</strong>。当中断被禁用时，就不会发生进程切换，从而保证了操作的原子性。操作完成后再重新启用中断。</li>
+<li><strong>多处理器系统</strong>：禁用中断的方法不再有效，因为其他CPU核心仍在运行。此时需要依赖硬件提供的特殊<strong>原子指令</strong>，例如：<ul>
+<li><code>Test-and-Set</code>：原子地读取一个内存位置的值，并同时将其设置为1。</li>
+<li><code>Compare-and-Swap (CAS)</code>：原子地比较内存中的值与一个给定值，如果相等，则将该内存位置更新为一个新值。</li>
+</ul>
+</li>
+</ol>
+<p>这些硬件指令为上层同步机制的实现提供了最底层的原子性保证。</p>
+<h2 id="L18-信号量的代码实现"><a href="#L18-信号量的代码实现" class="headerlink" title="L18 信号量的代码实现"></a>L18 信号量的代码实现</h2><p>我们可以用伪代码来描述信号量的数据结构和操作：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-keyword">typedef</span> <span class="hljs-keyword">struct</span> &#123;<br>    <span class="hljs-type">int</span> value; <span class="hljs-comment">// 信号量的值</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">process</span> *list; <span class="hljs-comment">// 等待该信号量的进程/线程队列</span><br>&#125; semaphore;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">wait</span><span class="hljs-params">(semaphore *S)</span> </span>&#123;<br>    <span class="hljs-comment">// 禁用中断或使用原子指令保护</span><br>    S-&gt;value--;<br>    <span class="hljs-keyword">if</span> (S-&gt;value &lt; <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-built_in">add_this_process_to</span>(S-&gt;list);<br>        <span class="hljs-built_in">block</span>(); <span class="hljs-comment">// 阻塞当前进程</span><br>    &#125;<br>    <span class="hljs-comment">// 恢复中断</span><br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">signal</span><span class="hljs-params">(semaphore *S)</span> </span>&#123;<br>    <span class="hljs-comment">// 禁用中断或使用原子指令保护</span><br>    S-&gt;value++;<br>    <span class="hljs-keyword">if</span> (S-&gt;value &lt;= <span class="hljs-number">0</span>) &#123;<br>        process P = <span class="hljs-built_in">remove_process_from</span>(S-&gt;list);<br>        <span class="hljs-built_in">wakeup</span>(P); <span class="hljs-comment">// 唤醒一个等待的进程</span><br>    &#125;<br>    <span class="hljs-comment">// 恢复中断</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这段代码直观地展示了信号量的工作原理。当资源不足时（<code>value &lt; 0</code>），进程将自己加入等待队列并阻塞。当有进程释放资源时（<code>signal</code>），如果等待队列不为空（<code>value &lt;= 0</code>），就唤醒一个等待者。</p>
+<h2 id="L19-死锁处理"><a href="#L19-死锁处理" class="headerlink" title="L19 死锁处理"></a>L19 死锁处理</h2><p>同步机制虽然解决了竞态问题，但也可能引入一种更棘手的问题——<strong>死锁（Deadlock）</strong>。</p>
+<p>死锁是指两个或多个进程因互相持有对方正在等待的资源，而都无法向前推进的僵持状态。</p>
+<p>死锁的发生必须同时满足以下四个必要条件：</p>
+<ol>
+<li><strong>互斥</strong>：资源一次只能被一个进程使用。</li>
+<li><strong>持有并等待</strong>：进程至少持有一个资源，并且在等待获取其他进程持有的资源。</li>
+<li><strong>非抢占</strong>：资源不能被强制地从持有它的进程中剥夺。</li>
+<li><strong>循环等待</strong>：存在一个进程等待链 {P0, P1, …, Pn}，其中 P0 等待 P1 的资源，P1 等待 P2 的资源，…，Pn 等待 P0 的资源。</li>
+</ol>
+<p>处理死锁的策略主要有四种：</p>
+<ol>
+<li><strong>死锁预防（Prevention）</strong><ul>
+<li><strong>思路</strong>：通过设计系统规则，破坏四个必要条件中的一个或多个。例如，要求进程一次性申请所有资源（破坏“持有并等待”），或对资源类型进行排序，要求进程按序申请（破坏“循环等待”）。</li>
+<li><strong>缺点</strong>：通常会降低资源利用率，对编程的限制也较大。</li>
+</ul>
+</li>
+<li><strong>死锁避免（Avoidance）</strong><ul>
+<li><strong>思路</strong>：在资源分配时，系统动态地检查这次分配是否可能导致未来发生死锁。如果存在风险，则不予分配。</li>
+<li><strong>经典算法</strong>：<strong>银行家算法</strong>。通过检查是否存在一个“安全序列”，来判断系统是否处于安全状态。</li>
+<li><strong>缺点</strong>：需要进程预先声明所需的最大资源量，且算法开销较大。</li>
+</ul>
+</li>
+<li><strong>死锁检测与解除（Detection &amp; Recovery）</strong><ul>
+<li><strong>思路</strong>：允许死锁发生，但系统会定期运行检测算法（如基于资源分配图）来判断当前是否已发生死锁。</li>
+<li><strong>解除方法</strong>：如果检测到死锁，则采取措施来打破循环等待，例如终止一个或多个死锁进程，或者抢占某些进程的资源。</li>
+</ul>
+</li>
+<li><strong>忽略该问题（Ostrich Algorithm）</strong><ul>
+<li><strong>思路</strong>：假定死锁不会发生。这是因为在通用操作系统中，死锁发生的概率较低，而预防或避免死锁的机制会带来显著的性能开销。因此，很多系统选择不处理死锁，而将问题留给用户（例如，手动重启卡死的程序）。</li>
+</ul>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>梳理完这一章，我对操作系统如何管理并发任务有了更深入的理解。从进程的抽象，到线程的引入，再到CPU调度策略的权衡，以及为保证数据一致性而设计的复杂同步机制，最后还要应对死锁这样的疑难杂症，整个体系充满了精巧的设计与权衡。</p>
+<p>这里面没有绝对完美的方案，只有在特定约束条件下的最优解。理解了这些底层的原理，下次再看到程序流畅运行或偶尔卡顿时，脑子里就不再是“魔法”了，而是具体的机制在运作：时间片切换、线程阻塞、资源竞争… 把抽象理论和实际体验联系起来，这正是学习的乐趣所在。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>操作系统学习手记01</div>
+      <div>http://st3r665.github.io/2025/08/31/操作系统学习手记01/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>St3r</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月31日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B002/" title="操作系统学习手记02">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">操作系统学习手记02</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/15/Rust-note01/" title="Rust_note01">
+                        <span class="hidden-mobile">Rust_note01</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"cffMsCRnQgVg41fT6r4UVhsn-gzGzoHsz","appKey":"7fJmz4elucAMMsKGIgyYKPjw","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

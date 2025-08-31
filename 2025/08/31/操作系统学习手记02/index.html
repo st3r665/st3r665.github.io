@@ -1,0 +1,846 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="St3r">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="学完这一章，我最大的感受就是，我们平时写代码时随手 new 一个对象，或者定义一个变量，背后有很复杂的机制。 所以，这篇学习笔记，我想好好地把这条链给捋清楚。 L20 内存使用与分段在咱们开始聊具体的内存管理技术之前，得先建立一个最基本的认知：程序看到的地址和内存条上真正的物理地址，不是一回事。  逻辑地址（Logical Address）：也叫虚拟地址，是程序代码中使用的地址，由 CPU 生成。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="操作系统学习手记02">
+<meta property="og:url" content="http://st3r665.github.io/2025/08/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B002/index.html">
+<meta property="og:site_name" content="St3r&#39;s Blog">
+<meta property="og:description" content="学完这一章，我最大的感受就是，我们平时写代码时随手 new 一个对象，或者定义一个变量，背后有很复杂的机制。 所以，这篇学习笔记，我想好好地把这条链给捋清楚。 L20 内存使用与分段在咱们开始聊具体的内存管理技术之前，得先建立一个最基本的认知：程序看到的地址和内存条上真正的物理地址，不是一回事。  逻辑地址（Logical Address）：也叫虚拟地址，是程序代码中使用的地址，由 CPU 生成。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-31T13:18:01.000Z">
+<meta property="article:modified_time" content="2025-08-31T13:19:35.163Z">
+<meta property="article:author" content="St3r">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>操作系统学习手记02 - St3r&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"st3r665.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"cffMsCRnQgVg41fT6r4UVhsn-gzGzoHsz","app_key":"7fJmz4elucAMMsKGIgyYKPjw","server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>St3r&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="操作系统学习手记02"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-31 21:18" pubdate>
+          2025年8月31日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          29 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">操作系统学习手记02</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>学完这一章，我最大的感受就是，我们平时写代码时随手 <code>new</code> 一个对象，或者定义一个变量，背后有很复杂的机制。</p>
+<p>所以，这篇学习笔记，我想好好地把这条链给捋清楚。</p>
+<h2 id="L20-内存使用与分段"><a href="#L20-内存使用与分段" class="headerlink" title="L20 内存使用与分段"></a>L20 内存使用与分段</h2><p>在咱们开始聊具体的内存管理技术之前，得先建立一个最基本的认知：程序看到的地址和内存条上真正的物理地址，不是一回事。</p>
+<ul>
+<li><strong>逻辑地址（Logical Address）</strong>：也叫虚拟地址，是程序代码中使用的地址，由 CPU 生成。比如C语言里的指针地址。</li>
+<li><strong>物理地址（Physical Address）</strong>：是内存硬件上的真实地址，内存单元的唯一标识。</li>
+</ul>
+<p>内存管理单元（MMU）是 CPU 内部的一个硬件，它的核心工作就是把程序产生的逻辑地址“翻译”成物理地址。而操作系统要做的，就是管理好这个翻译过程的“规则”。</p>
+<p>早期的系统很简单，直接把整个程序加载到一块连续的内存里，逻辑地址加一个基准地址（基址寄存器）就得到物理地址了。但这种方式太死板，而且容易产生碎片。</p>
+<p>于是，<strong>分段（Segmentation）</strong> 机制登场了。</p>
+<p>分段的思想非常符合我们程序员的直觉。我们写程序时，天然就会把代码分成几个逻辑部分：主函数（代码段）、全局变量（数据段）、函数调用栈（栈段）等等。分段机制就是把这种逻辑上的划分，直接映射到内存管理中。</p>
+<ul>
+<li><strong>核心思想</strong>：不再把整个程序看成一个整体，而是看作若干个逻辑**段（Segment）**的集合。每个段的大小可以不一样。</li>
+<li><strong>地址表示</strong>：逻辑地址不再是一个单一的值，而是一个二维的结构：<code>(段号, 段内偏移量)</code>。</li>
+<li><strong>实现机制</strong>：操作系统为每个进程维护一张<strong>段表（Segment Table）</strong>。段表里的每一项记录了一个段的信息，最重要的两个是：<ul>
+<li><strong>段基址（Base）</strong>：这个段在物理内存中的起始地址。</li>
+<li><strong>段限长（Limit）</strong>：这个段的大小。 CPU 中有两个特殊寄存器：段表基址寄存器（STBR）指向当前进程段表的起始位置，段表长度寄存器（STLR）记录段表的大小。</li>
+</ul>
+</li>
+<li><strong>地址翻译过程</strong>：<ol>
+<li>CPU 拿到一个逻辑地址 <code>(段号 s, 偏移量 d)</code>。</li>
+<li>检查段号 <code>s</code> 是否合法（<code>s &lt; STLR</code>）。</li>
+<li>从段表中 <code>STBR + s</code> 的位置，取出该段的基址 <code>base</code> 和限长 <code>limit</code>。</li>
+<li>检查偏移量 <code>d</code> 是否合法（<code>d &lt; limit</code>）。如果越界，则触发异常（比如“段错误”）。</li>
+<li>计算物理地址：<code>Physical Address = base + d</code>。</li>
+</ol>
+</li>
+</ul>
+<p><strong>分段的优缺点很鲜明：</strong></p>
+<ul>
+<li><strong>优点</strong>：<ul>
+<li><strong>逻辑清晰</strong>：用户可以按逻辑模块来组织程序，方便。</li>
+<li><strong>易于共享和保护</strong>：可以很容易地让多个进程共享同一个代码段（比如共享库），同时对不同段设置不同的读&#x2F;写&#x2F;执行权限，安全性好。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li><strong>外部碎片（External Fragmentation）</strong>：这是分段最大的痛点。由于段的大小是可变的，内存经过多次分配和回收后，会产生大量不连续的小空闲块。这些小块单独来看可能无法使用，但它们的总和可能很大。这就好比停车场里有很多零散的空位，但就是停不进一辆大巴车。为了解决这个问题，需要进行<strong>内存紧缩（Compaction）</strong>，但这个操作开销巨大。</li>
+</ul>
+</li>
+</ul>
+<h2 id="L21-内存分区与分页"><a href="#L21-内存分区与分页" class="headerlink" title="L21 内存分区与分页"></a>L21 内存分区与分页</h2><p>为了解决分段产生的外部碎片问题，工程师们提出了另一种天才的设计——<strong>分页（Paging）</strong>。</p>
+<p>分页的思想和分段完全不同。它不再从程序的逻辑结构出发，而是从物理内存管理的角度出发，采取“化整为零，规格统一”的策略。</p>
+<ul>
+<li><strong>核心思想</strong>：<ul>
+<li>将<strong>物理内存</strong>划分为大小相等的固定块，每一块称为<strong>帧（Frame）</strong>。</li>
+<li>将<strong>逻辑地址空间</strong>也划分为同样大小的固定块，每一块称为<strong>页（Page）</strong>。</li>
+</ul>
+</li>
+<li><strong>地址表示</strong>：逻辑地址被看作一个一维的整数，但硬件会把它拆分成两部分：<code>(页号, 页内偏移量)</code>。高位是页号，低位是偏移量。</li>
+<li><strong>实现机制</strong>：操作系统为每个进程维护一张<strong>页表（Page Table）</strong>。页表的作用就是记录逻辑页到物理帧的映射关系。<ul>
+<li>页表的索引就是<strong>页号</strong>。</li>
+<li>页表项的内容就是该页对应的<strong>帧号</strong>。 CPU 中的页表基址寄存器（PTBR）指向当前进程页表的起始位置。</li>
+</ul>
+</li>
+<li><strong>地址翻译过程</strong>：<ol>
+<li>CPU 拿到一个逻辑地址，并将其拆分为 <code>(页号 p, 偏移量 d)</code>。</li>
+<li>访问当前进程的页表（地址在 PTBR 中），以页号 <code>p</code> 为索引，查找到对应的帧号 <code>f</code>。</li>
+<li>计算物理地址：<code>Physical Address = f * 帧大小 + d</code>。</li>
+</ol>
+</li>
+</ul>
+<p>为了加速这个查找过程，现代CPU都引入了<strong>转译后备缓冲区（TLB - Translation Lookaside Buffer）</strong>。它是一个高速的硬件缓存，专门用来存放最近使用过的页表项。地址翻译时，会先查 TLB，如果命中（TLB Hit），就直接拿到帧号，速度极快。如果未命中（TLB Miss），才需要去内存中查询页表，并把查到的结果存入 TLB 以备后用。</p>
+<p><strong>分页的优缺点也一目了然：</strong></p>
+<ul>
+<li><strong>优点</strong>：<ul>
+<li><strong>没有外部碎片</strong>：因为内存是以帧为单位进行分配的，任何一个空闲的帧都可以分配给任何一个页。分配和回收都非常简单。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：<ul>
+<li><strong>内部碎片（Internal Fragmentation）</strong>：一个进程的最后一页通常不会占满整个页框，那么多出来的空间就被浪费了。虽然单个内部碎片不大，但数量多了也很可观。</li>
+<li><strong>页表开销</strong>：页表本身是存放在内存中的，如果逻辑地址空间很大（比如32位系统有4GB），页表本身就会变得非常巨大，占用大量内存。为了解决这个问题，又发展出了多级页表、反向页表等技术。</li>
+</ul>
+</li>
+</ul>
+<h2 id="L22-段页结合的实际内存管理"><a href="#L22-段页结合的实际内存管理" class="headerlink" title="L22 段页结合的实际内存管理"></a>L22 段页结合的实际内存管理</h2><p>分段和分页各有优劣，那么能不能把它们结合起来，取长补短呢？答案是肯定的。这就是<strong>段页式管理（Segmented Paging）</strong>。</p>
+<p>这种机制融合了两者的优点：既保留了分段的逻辑划分、易于共享和保护的特性，又通过分页解决了分段的外部碎片问题。</p>
+<ul>
+<li><strong>核心思想</strong>：先将程序按逻辑分段，然后把每个段再进行分页。</li>
+<li><strong>地址表示</strong>：逻辑地址变成了三维结构：<code>(段号, 段内页号, 页内偏移量)</code>。</li>
+<li><strong>实现机制</strong>：<ul>
+<li>系统为每个进程维护一个<strong>段表</strong>。</li>
+<li>段表的每个表项不再是段的物理基址，而是指向该段对应的<strong>页表</strong>的基址。</li>
+</ul>
+</li>
+<li><strong>地址翻译过程</strong>：这是一个两级查找的过程。<ol>
+<li>CPU 拿到逻辑地址 <code>(s, p, d)</code>。</li>
+<li>用段号 <code>s</code> 查段表，找到该段的页表的基址。</li>
+<li>用页号 <code>p</code> 查该段的页表，找到对应的帧号 <code>f</code>。</li>
+<li>计算最终物理地址：<code>Physical Address = f * 帧大小 + d</code>。</li>
+</ol>
+</li>
+</ul>
+<p>段页式管理是现代操作系统（如Intel x86架构的保护模式）中实际采用的内存管理方式。它虽然增加了地址翻译的复杂度（需要两次内存访问，当然TLB可以缓解这个问题），但提供了非常强大和灵活的内存视图。</p>
+<h2 id="L23-请求调页内存换入"><a href="#L23-请求调页内存换入" class="headerlink" title="L23 请求调页内存换入"></a>L23 请求调页内存换入</h2><p>上面讨论的所有机制，都有一个共同的前提：程序在运行前，必须把需要的部分（段或页）全部加载到内存中。如果程序太大，内存不够怎么办？</p>
+<p><strong>虚拟内存（Virtual Memory）</strong> 技术就是为了解决这个问题而生的。它彻底打破了“程序必须完全在内存中才能运行”的限制，允许程序使用的逻辑地址空间远大于实际的物理内存空间。</p>
+<p><strong>请求调页（Demand Paging）</strong> 是实现虚拟内存最常用的方法。</p>
+<ul>
+<li><strong>核心思想</strong>：不要在程序开始时就加载所有页，而是在真正需要访问某个页时，才把它从磁盘加载到内存。这种懒加载（Lazy Loading）策略，也叫<strong>请求调页</strong>。</li>
+<li><strong>实现机制</strong>：<ul>
+<li>需要在页表项中增加一个<strong>有效-无效位（Valid-Invalid Bit）</strong>。<ul>
+<li><code>Valid</code>（或1）：表示该页在内存中，页表项有效。</li>
+<li><code>Invalid</code>（或0）：表示该页不在内存中（可能在磁盘上），或者该地址根本不合法。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>页错误（Page Fault）处理流程</strong>：这是请求调页的核心。<ol>
+<li>当CPU访问一个逻辑地址时，MMU进行地址翻译，发现对应页的页表项是 <code>Invalid</code>。</li>
+<li>MMU 捕捉到这个错误，并触发一个硬件<strong>中断（Trap）</strong>，这个中断就是“页错误”。</li>
+<li>CPU控制权转交给操作系统的<strong>页错误处理程序</strong>。</li>
+<li>操作系统检查这个地址是否合法，以及该页在磁盘（通常是一个称为“交换空间”或“交换文件”的区域）上的位置。</li>
+<li>在物理内存中找到一个空闲的帧。</li>
+<li>发起一次磁盘I&#x2F;O操作，将所需的页从磁盘**换入（Swap-in）**到这个空闲帧中。</li>
+<li>I&#x2F;O完成后，更新该进程的页表，将对应的页表项设置为 <code>Valid</code>，并填入正确的帧号。</li>
+<li>重新执行导致页错误的那个指令。这次，地址翻译就能成功了。</li>
+</ol>
+</li>
+</ul>
+<p>请求调页带来了巨大的好处：程序启动更快、内存利用率更高、系统可以支持更大的并发度，并且能够运行比物理内存还大的程序。</p>
+<h2 id="L24-内存换出"><a href="#L24-内存换出" class="headerlink" title="L24 内存换出"></a>L24 内存换出</h2><p>请求调页的流程中有一个关键步骤：找到一个“空闲的帧”。但如果物理内存已经满了，一个空闲帧都没有了怎么办？</p>
+<p>这时候，操作系统就必须做出选择：挑选一个当前在内存中的页，把它写回磁盘（如果它被修改过的话），以腾出空间。这个过程就是<strong>页面置换（Page Replacement）</strong>，被换出去的页称为“牺牲页（Victim Page）”。</p>
+<p>页面置換算法的好坏，直接决定了虚拟内存系统的性能。一个好的算法，应该选择一个“未来最不可能被访问到”的页进行置换，从而最小化页错误的次数。</p>
+<p>以下是几种经典的页面置换算法：</p>
+<ol>
+<li><strong>先进先出（FIFO）算法</strong><ul>
+<li><strong>思路</strong>：置换最先进入内存的页面。实现简单，用一个队列即可。</li>
+<li><strong>问题</strong>：性能较差。一个很早就进入内存但一直被频繁访问的“热点”页面，可能会被无情地换出。它还会遭受“Belady异常”——即分配的帧数越多，缺页率反而可能上升的诡异现象。</li>
+</ul>
+</li>
+<li><strong>最优（OPT&#x2F;MIN）算法</strong><ul>
+<li><strong>思路</strong>：置换未来最长时间内不会被访问的页面。</li>
+<li><strong>评价</strong>：这是一种理想化的算法，缺页率最低，可以作为衡量其他算法性能的基准。但它需要预知未来，因此在实际中无法实现。</li>
+</ul>
+</li>
+<li><strong>最近最少使用（LRU - Least Recently Used）算法</strong><ul>
+<li><strong>思路</strong>：置换最长时间没有被访问过的页面。这是基于“局部性原理”——如果一个页面最近被访问了，那么它在不久的将来也很可能被再次访问。</li>
+<li><strong>评价</strong>：性能接近最优算法，非常好。但实现起来很困难，需要硬件支持来记录每个页面的访问时间，开销很大。</li>
+</ul>
+</li>
+<li><strong>LRU 的近似算法</strong>：由于真LRU太难实现，实际系统采用的都是它的近似算法。<ul>
+<li><strong>二次机会（Second-Chance）&#x2F; 时钟（Clock）算法</strong>：这是对FIFO的改进。页面被组织成一个环形队列（像一个钟面）。每个页有一个<strong>引用位（Reference Bit）</strong>，访问时由硬件置为1。置换时，指针从当前位置开始扫描。如果遇到引用位为1的页，就给它“第二次机会”，将其引用位清零，然后继续扫描。如果遇到引用位为0的页，就选择它作为牺牲页。这种算法在性能和实现开销之间取得了很好的平衡。</li>
+</ul>
+</li>
+</ol>
+<p>如果一个进程分配到的帧数太少，导致它需要用到的页面集合（工作集）无法全部驻留在内存中，那么它会频繁地发生页错误，CPU大部分时间都在等待磁盘I&#x2F;O，而不是执行代码。这种系统性能急剧下降的状态，称为<strong>颠簸（Thrashing）</strong>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这一切的核心，都是<strong>抽象</strong>。通过在逻辑和物理之间增加一层又一层的映射，操作系统为我们程序员隐藏了底层硬件的复杂性，提供了一个简洁、巨大、安全的内存模型。当然，这一切都是有代价的，那就是地址翻译的性能开销和系统实现的复杂性。但相比于它带来的巨大好处，这些代价完全值得。</p>
+<p>理解了内存管理的这些底层原理，以后再遇到内存相关的 Bug，或者思考程序性能优化时，或许就能有更深入的视角了。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>操作系统学习手记02</div>
+      <div>http://st3r665.github.io/2025/08/31/操作系统学习手记02/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>St3r</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月31日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B003/" title="操作系统学习手记03">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">操作系统学习手记03</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/31/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E6%89%8B%E8%AE%B001/" title="操作系统学习手记01">
+                        <span class="hidden-mobile">操作系统学习手记01</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"cffMsCRnQgVg41fT6r4UVhsn-gzGzoHsz","appKey":"7fJmz4elucAMMsKGIgyYKPjw","path":"window.location.pathname","placeholder":null,"avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
