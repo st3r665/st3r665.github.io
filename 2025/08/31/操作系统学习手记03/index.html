@@ -27,7 +27,7 @@
 <meta property="og:description" content="操作系统学习手记：当计算机与世界相连计算机的价值在于与我们交互，与外部世界交换信息。这一章，我们就来聊聊这个“交换”的过程——I&#x2F;O（输入&#x2F;输出）以及信息得以长久保存的基石——文件系统。 那么，就让我们从最基本的 I&#x2F;O 开始！ L25 IO与显示器I&#x2F;O，顾名思义就是输入（Input）和输出（Output）。CPU 和内存是计算机的核心，而所有连接到这个核">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-08-31T13:22:41.000Z">
-<meta property="article:modified_time" content="2025-08-31T13:22:46.412Z">
+<meta property="article:modified_time" content="2025-09-02T05:01:29.186Z">
 <meta property="article:author" content="St3r">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -235,7 +235,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.1k 字
+          3k 字
         
       </span>
     
@@ -367,7 +367,7 @@
 <li><strong>访问文件</strong>：现在，文件系统拿到了 <code>notes.txt</code> 的 inode。这个 inode 里包含了文件的所有信息，最重要的是指向其数据块的指针。至此，我们就可以根据这些指针，去磁盘的数据区读取文件的真正内容了。</li>
 </ol>
 <p>这个过程涉及多次磁盘I&#x2F;O，为了提高效率，操作系统会大量使用<strong>缓存（Cache）</strong>，将最近访问过的目录内容和 inode 缓存在内存中，避免重复的磁盘读取。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>正是这些看似乎理所当然的抽象，才使得我们能够方便地与计算机交互、高效地管理海量数据。下一次，当你双击打开一个文件时，不妨想一-想这背后操作系统所经历的从路径解析到磁盘读写的漫长而精妙的旅程。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>正是这些看似乎理所当然的抽象，才使得我们能够方便地与计算机交互、高效地管理海量数据。</p>
 
                 
               </div>
