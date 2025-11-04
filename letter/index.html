@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>一封情书</title>
+    <link rel="icon" type="image/x-icon" href="https://i.loli.net/2021/06/03/lFg2V4WUcmkB98G.png">
+    <meta name="language" content="zh-CN">
+    <meta name="title" content="小遥遥">
+    <meta name="github" content="https://github.com/sun0225SUN/Awesome-Love-Code">
+    <meta name="describe" content="收集不易，您的star是我坚持的动力，同时也欢迎各位PR哦! ">
+    <link type="text/css" rel="stylesheet" href="./Love_files/default.css">
+    <script type="text/javascript" src="./Love_files/jquery.min.js"></script>
+    <script type="text/javascript" src="./Love_files/jscex.min.js"></script>
+    <script type="text/javascript" src="./Love_files/jscex-parser.js"></script>
+    <script type="text/javascript" src="./Love_files/jscex-jit.js"></script>
+    <script type="text/javascript" src="./Love_files/jscex-builderbase.min.js"></script>
+    <script type="text/javascript" src="./Love_files/jscex-async.min.js"></script>
+    <script type="text/javascript" src="./Love_files/jscex-async-powerpack.min.js"></script>
+    <script type="text/javascript" src="./Love_files/functions.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./Love_files/love.js" charset="utf-8"></script>
+
+</head>
+
+<body>
+    <div id="main">
+        <div id="error">亲，您使用的浏览器无法支持即将显示的内容，请换成谷歌(<a
+                href="http://www.google.cn/chrome/intl/zh-CN/landing_chrome.html?hl=zh-CN&brand=CHMI">Chrome</a>)或者火狐(<a
+                href="http://firefox.com.cn/download/">Firefox</a>)浏览器哟~</div>
+        <div id="wrap">
+            <div id="text">
+                <div id="code">
+                    <span class="say">亲爱的储佳遥同学，我知道你天真善良温柔爱笑</span><br>
+                    <span class="say">虽然我们认识的时间不长</span><br>
+                    <span class="say">但是我似乎已经有一些离不开你了</span><br>
+                    <span class="say">我希望睡醒就能看到你的消息</span><br>
+                    <span class="say">我开始盼着和你一起打电话的时间</span><br>
+                    <span class="say">我之前看过一本书，书上说</span><br>
+                    <span class="say">如果想要和一个人产生联系，就必须承担离开的风险</span><br>
+                    <span class="say">所以在此之前，我一直秉持着随心就好的态度</span><br>
+                    <span class="say">因为我害怕分别</span><br>
+                    <span class="say">但是和你在一块时的开心</span><br>
+                    <span class="say">似乎已经远大于我对于未来分别的害怕</span><br>
+                    <span class="say">我一直认为相遇便已经是天大的缘分</span><br>
+                    <span class="say">更何况我们如此合拍</span><br>
+                    <span class="say">我觉得恋爱就是在相处合适的情况下自然而然的结果</span><br>
+                    <span class="say">我不想花那么多的时间去铺垫</span><br>
+                    <span class="say">喜欢就在一起，在一起再去了解也不迟</span><br>
+                    <span class="say">所以亲爱的储佳遥同学，你愿不愿意给我一个机会</span><br>
+                    <span class="say">一个和你一起看日落，看大海，看世界的机会？</span><br>
+                    <span class="say"><span class="space"></span> -- 傻鱼</span>
+                </div>
+            </div>
+            <div id="clock-box">
+                <a href="https://sunguoqi.com" target="_blank"></a><a href="https://sunguoqi.com"
+                    target="_blank">我们认识的</a>
+                <div id="clock"></div>
+            </div>
+            <canvas id="canvas" width="1100" height="680"></canvas>
+        </div>
+
+    </div>
+
+    <audio preload="auto" autoplay id="media" src="love.mp3" loop="loop" playsinline></audio>
+
+    <script>
+        (function () {
+            var canvas = $('#canvas');
+
+            if (!canvas[0].getContext) {
+                $("#error").show();
+                return false;
+            }
+
+            var width = canvas.width();
+            var height = canvas.height();
+
+            canvas.attr("width", width);
+            canvas.attr("height", height);
+
+            var opts = {
+                seed: {
+                    x: width / 2 - 20,
+                    color: "rgb(190, 26, 37)",
+                    scale: 2
+                },
+                branch: [
+                    [535, 680, 570, 250, 500, 200, 30, 100, [
+                        [540, 500, 455, 417, 340, 400, 13, 100, [
+                            [450, 435, 434, 430, 394, 395, 2, 40]
+                        ]],
+                        [550, 445, 600, 356, 680, 345, 12, 100, [
+                            [578, 400, 648, 409, 661, 426, 3, 80]
+                        ]],
+                        [539, 281, 537, 248, 534, 217, 3, 40],
+                        [546, 397, 413, 247, 328, 244, 9, 80, [
+                            [427, 286, 383, 253, 371, 205, 2, 40],
+                            [498, 345, 435, 315, 395, 330, 4, 60]
+                        ]],
+                        [546, 357, 608, 252, 678, 221, 6, 100, [
+                            [590, 293, 646, 277, 648, 271, 2, 80]
+                        ]]
+                    ]]
+                ],
+                bloom: {
+                    num: 700,
+                    width: 1080,
+                    height: 650,
+                },
+                footer: {
+                    width: 1200,
+                    height: 5,
+                    speed: 10,
+                }
+            }
+
+            var tree = new Tree(canvas[0], width, height, opts);
+            var seed = tree.seed;
+            var foot = tree.footer;
+            var hold = 1;
+
+            canvas.click(function (e) {
+                var offset = canvas.offset(), x, y;
+                x = e.pageX - offset.left;
+                y = e.pageY - offset.top;
+                if (seed.hover(x, y)) {
+                    hold = 0;
+                    canvas.unbind("click");
+                    canvas.unbind("mousemove");
+                    canvas.removeClass('hand');
+                }
+            }).mousemove(function (e) {
+                var offset = canvas.offset(), x, y;
+                x = e.pageX - offset.left;
+                y = e.pageY - offset.top;
+                canvas.toggleClass('hand', seed.hover(x, y));
+            });
+
+            var seedAnimate = eval(Jscex.compile("async", function () {
+                seed.draw();
+                while (hold) {
+                    $await(Jscex.Async.sleep(10));
+                }
+                while (seed.canScale()) {
+                    seed.scale(0.95);
+                    $await(Jscex.Async.sleep(10));
+                }
+                while (seed.canMove()) {
+                    seed.move(0, 2);
+                    foot.draw();
+                    $await(Jscex.Async.sleep(10));
+                }
+            }));
+
+            var growAnimate = eval(Jscex.compile("async", function () {
+                do {
+                    tree.grow();
+                    $await(Jscex.Async.sleep(10));
+                } while (tree.canGrow());
+            }));
+
+            var flowAnimate = eval(Jscex.compile("async", function () {
+                do {
+                    tree.flower(2);
+                    $await(Jscex.Async.sleep(10));
+                } while (tree.canFlower());
+            }));
+
+            var moveAnimate = eval(Jscex.compile("async", function () {
+                tree.snapshot("p1", 240, 0, 610, 680);
+                while (tree.move("p1", 500, 0)) {
+                    foot.draw();
+                    $await(Jscex.Async.sleep(10));
+                }
+                foot.draw();
+                tree.snapshot("p2", 500, 0, 610, 680);
+
+                // 会有闪烁不得意这样做, (＞﹏＜)
+                canvas.parent().css("background", "url(" + tree.toDataURL('image/png') + ")");
+                canvas.css("background", "#ffc0cb");
+                $await(Jscex.Async.sleep(300));
+                canvas.css("background", "none");
+            }));
+
+            var jumpAnimate = eval(Jscex.compile("async", function () {
+                var ctx = tree.ctx;
+                while (true) {
+                    tree.ctx.clearRect(0, 0, width, height);
+                    tree.jump();
+                    foot.draw();
+                    $await(Jscex.Async.sleep(25));
+                }
+            }));
+
+            var textAnimate = eval(Jscex.compile("async", function () {
+                var together = new Date();
+                together.setFullYear(2025, 9, 13);
+                together.setHours(0);
+                together.setMinutes(0);
+                together.setSeconds(0);
+                together.setMilliseconds(0);
+
+                $("#code").show().typewriter();
+                $("#clock-box").fadeIn(500);
+                while (true) {
+                    timeElapse(together);
+                    $await(Jscex.Async.sleep(1000));
+                }
+            }));
+
+            var runAsync = eval(Jscex.compile("async", function () {
+                $await(seedAnimate());
+                $await(growAnimate());
+                $await(flowAnimate());
+                $await(moveAnimate());
+
+                textAnimate().start();
+
+                $await(jumpAnimate());
+            }));
+
+            runAsync().start();
+        })();
+    </script>
+
+    <script>
+        // 处理浏览器的自动播放限制：首次用户交互后强制播放
+        (function () {
+            var audio = document.getElementById('media');
+            if (!audio) return;
+
+            audio.muted = false;
+            // 固定默认音量为 0.6
+            audio.volume = 0.2;
+
+            function cleanup() {
+                document.removeEventListener('click', unlock);
+                document.removeEventListener('touchstart', unlock);
+                document.removeEventListener('keydown', unlock);
+            }
+
+            function unlock() {
+                var p = audio.play();
+                if (p && typeof p.then === 'function') {
+                    p.then(function () { cleanup(); }).catch(function () { /* 忽略失败，保留监听 */ });
+                } else {
+                    cleanup();
+                }
+            }
+
+            // 尝试直接播放；若被阻止，则绑定一次用户交互事件解锁
+            var tryPlay = audio.play();
+            if (tryPlay && typeof tryPlay.catch === 'function') {
+                tryPlay.catch(function () {
+                    document.addEventListener('click', unlock, { once: false });
+                    document.addEventListener('touchstart', unlock, { once: false });
+                    document.addEventListener('keydown', unlock, { once: false });
+                });
+            }
+
+            // 已取消滑杆，音量固定为默认值
+        })();
+    </script>
+
+
+
+</body>
+
+</html>
